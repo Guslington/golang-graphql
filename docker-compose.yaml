@@ -1,0 +1,28 @@
+services:
+
+  db:
+    build:
+      context: ./
+      dockerfile: Dockerfile.postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: dbpass
+      POSTGRES_USER: dbuser
+      POSTGRES_DB: graphql
+    image: postgres
+
+  redis:
+    ports:
+      - 6379:6379
+    image: redis
+
+  movies:
+    ports:
+      - 8080:8080
+    image: local/app
+    build:
+      context: ./
+      dockerfile: services/movies/Dockerfile
+    environment:
+      - DB_URL=postgres://dbuser:dbpass@db:5432/graphql?sslmode=disable
